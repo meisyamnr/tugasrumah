@@ -1,0 +1,159 @@
+// Meisya Ma'rifa Nur
+// IT 06-02
+// 1202230020
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- header
+
+//code header
+#ifndef QUEUE_H_INCLUDED
+#define QUEUE_H_INCLUDED
+#include <iostream>
+
+using namespace std;
+
+const int maxqueue = 10; //ukuran max 10
+
+struct QueueOfInt {
+    int ar[maxqueue];//menyimpan elemen queue
+    int head, tail; //opsi awal dan akhir pada queue
+};
+
+void CreateEmpty(QueueOfInt &q); //membuat elemen kosong
+void enQueue(QueueOfInt &q, int elm); //menambah elemen
+void deQueue(QueueOfInt &q); //menghapus elemen
+bool isEmpty(QueueOfInt q); //memeriksa apakah elemen kosong
+bool isFull(QueueOfInt q); //memeriksa apakah elemen penuh
+
+#endif // QUEUE_H_INCLUDED
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- source
+
+//code source
+#include "Queue.h"
+#include <iostream>
+
+using namespace std;
+
+void CreateEmpty(QueueOfInt &q){ //membuat antrian kosong
+    q.head = -1;
+    q.tail = -1;
+}
+
+bool isEmpty(QueueOfInt q){ //memeriksa antrian q kosong atau tidak
+     return (q.head==-1)&&(q.tail==-1); //jika head dan tail sama sama -1 maka antrian kosong
+}
+
+bool isFull (QueueOfInt q){ //memeriksa antrian q penuh atau tidak
+    return (q.head==0)&&(q.tail== maxqueue);
+}
+
+void enQueue(QueueOfInt &q,int elm){ //menambah elemen elm dalam antrian q
+     if(isFull(q)){ //memeriksa antrian penuh atau tidak
+        cout<< "Queue sudah penuh"<< endl; //jika antrian penuh pesan ini akan ditampilkan
+     }else{
+        if(isEmpty(q)){
+          q.head = 0;
+          q.tail = 0;
+        }else{
+            q.tail++; //penambahan elemen baru
+        }
+        q.ar[q.tail]=elm; //memasukkan elemen baru elm ke dalam array antrian pada posisi tail
+     }
+}
+
+void deQueue(QueueOfInt &q){ //menghapus elemen pertama dari antrian q
+    if( isEmpty(q)){
+        cout<< "Queue sudah kosong"<< endl; //Jika antrian sudah kosong, maka fungsi akan mencetak pesan bahwa antrian sudah kosong
+     }else{
+         if(q.head==q.tail){ //Jika tidak, fungsi akan menggeser seluruh elemen antrian ke posisi sebelumnya dan mengurangi nilai tail
+            CreateEmpty(q);
+         }else{
+            for(int i=q.head+1; i<=q.tail;i++){
+                q.ar[i-1]= q.ar[i];
+            }
+            q.tail--;
+        }
+     }
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- main
+
+//code main
+#include <iostream>
+#include "Queue.h"
+
+using namespace std;
+
+int main()
+{
+
+QueueOfInt q; //mendeklarasikan objek
+CreateEmpty(q); //membuat elemen kosong
+int pilih, nomor; //pilih dan nomor masuk dalam variabel integer
+
+    do //menampilkan menu pilihan pada user
+    {
+    cout << "\n     MENU PEMBELIAN TIKET KONSER\n";
+    cout << "\n1. Tambah Pembeli" << endl;
+    cout << "2. Hapus Pembeli" << endl;
+    cout << "3. Lihat Pembeli yang sedang berada di depan antrian" << endl;
+    cout << "4. Lihat semua Pembeli yang sedang antri" << endl;
+    cout << "5. Lihat jumlah Pembeli yang sedang antri" << endl;
+    cout << "\nMasukkan pilihan anda: ";
+    cin >> pilih; //melakukan operasi berdasarkan menu pilihan user
+
+    switch (pilih)
+    {
+    case 1:
+        cout << "Masukkan nomor : "; //masukkan nomor antrian  pembeli
+        cin >> nomor;
+        enQueue(q, nomor); //menambah antrian pembeli
+        cout <<"Berhasil ditambahkan ke antrian." << endl;
+        break; //program berhenti
+    case 2:
+        deQueue(q); //menghapus antrian pembeli
+        cout << "Penghapusan berhasil" << endl;
+        break; //program berhenti
+    case 3:
+        if (isEmpty(q))
+        {
+            cout << "Antrian pembeli kosong." << endl;
+        }
+        else
+        {
+            cout << "Pembeli yang sedang berada di depan antrian : " << q.ar[q.head] << endl;
+        }
+        break; //program berhenti
+    case 4:
+        if (isEmpty(q)) //memeriksa antrian kosong atau tidak
+        {
+            cout << "Antrian pembeli kosong." << endl; //jika kosong pesan ini akan dicetak
+        }
+        else
+        {
+            cout << "Pembeli yang sedang antri: ";
+            for (int i = q.head; i <= q.tail; i++) //memproses nomor antrian pembeli yang berada didepan antrian
+            {
+                cout << q.ar[i] << " "; //mencetak nomor pembeli dalam antrian
+            }
+            cout << endl;
+        }
+        break; //program berhenti
+    case 5:
+        if (isEmpty(q)) //memeriksa antrian apakah kosong
+        {
+            cout << "Jumlah pembeli yang sedang antri: 0" << endl;
+        }
+        else //jika tidak kosong
+        {
+            cout << "Jumlah pembeli yang sedang antri: " << q.tail + 1 << endl; //mengoutputkan jumlah pembeli yang sedang mengantri
+        }
+        break; //program selesai
+    default:
+        cout << "Pilihan tidak valid." << endl;
+        break; //program berhenti
+    }
+}
+    while (pilih != 0); //loop terus berjalan sampai user memilih keluar
+
+    return 0; //mengakhiri program
+}
